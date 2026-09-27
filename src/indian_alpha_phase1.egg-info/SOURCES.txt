@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+src/indian_alpha/__init__.py
+src/indian_alpha/backtest.py
+src/indian_alpha/cli.py
+src/indian_alpha/data.py
+src/indian_alpha/features.py
+src/indian_alpha/reporting.py
+src/indian_alpha/strategy.py
+src/indian_alpha_phase1.egg-info/PKG-INFO
+src/indian_alpha_phase1.egg-info/SOURCES.txt
+src/indian_alpha_phase1.egg-info/dependency_links.txt
+src/indian_alpha_phase1.egg-info/entry_points.txt
+src/indian_alpha_phase1.egg-info/requires.txt
+src/indian_alpha_phase1.egg-info/top_level.txt
+tests/test_backtest.py
+tests/test_features.py

@@ -1,0 +1,2 @@
+[console_scripts]
+indian-alpha = indian_alpha.cli:main
