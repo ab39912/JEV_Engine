@@ -95,6 +95,26 @@ Run the backtest:
 indian-alpha backtest --csv data/raw/nifty50.csv --cost-bps 10 --risk-free-rate 0.06
 ```
 
+### Evaluate a later date window
+
+Use `--start-date` and `--end-date` to report a selected period while retaining earlier
+rows in the CSV for SMA/RSI warm-up. Both bounds are inclusive. For example, download
+history through September 2026, then evaluate only 2025 onward:
+
+```powershell
+indian-alpha download --symbol "^NSEI" --start 2015-01-01 --end 2026-09-28 --output data/raw/nifty50.csv
+indian-alpha backtest --csv data/raw/nifty50.csv --start-date 2025-01-01 --end-date 2026-09-27 --cost-bps 10 --output-dir data/results/holdout-2025-onward
+```
+
+Earlier rows calculate features and the prior-session signal, but the reported equity
+curve, returns, and benchmark comparison begin at the first selected session. At that
+boundary, the backtest starts with the previous session's signal and charges an entry
+cost if it begins invested. Keep strategy settings and costs fixed before evaluating a
+holdout. Since the 2015–2024 results have already been inspected in this learning run,
+2025 onward is a more useful next check than re-splitting those same years, although
+continuing to change rules after seeing holdout results will also make that period
+exploratory.
+
 For an NSE equity, change both the symbol and file name:
 
 ```powershell

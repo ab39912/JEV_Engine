@@ -34,6 +34,14 @@ def _parser() -> argparse.ArgumentParser:
     backtest.add_argument("--capital", type=float, default=100_000.0)
     backtest.add_argument("--cost-bps", type=float, default=10.0)
     backtest.add_argument("--risk-free-rate", type=float, default=0.0, help="Annual decimal rate, e.g. 0.06")
+    backtest.add_argument(
+        "--start-date",
+        help="Inclusive first date to report; earlier CSV rows warm up indicators",
+    )
+    backtest.add_argument(
+        "--end-date",
+        help="Inclusive last date to report; later CSV rows are ignored in the report",
+    )
     backtest.add_argument("--output-dir", type=Path, default=Path("data/results/latest"))
     return parser
 
@@ -67,6 +75,8 @@ def main() -> None:
         initial_capital=args.capital,
         transaction_cost_bps=args.cost_bps,
         annual_risk_free_rate=args.risk_free_rate,
+        start_date=args.start_date,
+        end_date=args.end_date,
     )
     destination = save_results(result, args.output_dir)
     print(format_report(result))

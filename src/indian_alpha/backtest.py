@@ -72,10 +72,15 @@ def run_backtest(
     initial_capital: float = 100_000.0,
     transaction_cost_bps: float = 10.0,
     annual_risk_free_rate: float = 0.0,
+    start_date: str | None = None,
+    end_date: str | None = None,
 ) -> BacktestResult:
     """Backtest a desired close signal, executed from the following session.
 
     Costs are applied to every entry and exit as basis points of portfolio value.
+    Optional date bounds are inclusive. Signals and returns are first calculated on the
+    complete input history, so rows before start_date warm up indicators and provide
+    the prior-session signal. The report and equity curve then start at start_date.
     Returns assume fractional allocation and no leverage, tax, or slippage beyond
     the configured cost. These simplifying assumptions are educational, not live-ready.
     """
@@ -91,6 +96,16 @@ def run_backtest(
     desired = signal.reindex(daily.index).fillna(0.0).clip(0.0, 1.0)
     daily["signal"] = desired
     daily["position"] = desired.shift(1).fillna(0.0)
+
+    if start_date is not None:
+        daily = daily.loc[daily.index >= pd.Timestamp(start_date)]
+    if end_date is not None:
+        daily = daily.loc[daily.index <= pd.Timestamp(end_date)]
+    if daily.empty:
+        raise ValueError("The selected date window contains no data rows.")
+
+    # Start the evaluation portfolio at the first selected session. If the previous
+    # close's signal calls for a position, charge its entry cost on this first session.
     daily["turnover"] = daily["position"].diff().abs().fillna(daily["position"].abs())
     cost_rate = transaction_cost_bps / 10_000.0
     daily["gross_strategy_return"] = daily["position"] * daily["asset_return"]
